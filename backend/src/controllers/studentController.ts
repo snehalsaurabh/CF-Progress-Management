@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import Student from '../models/Student';
 import { sendSuccess, sendError, sendPaginatedSuccess } from '../utils/responseHandler';
 import { StudentQueryParams } from '../types/api';
+import DataSyncService from '../services/dataSyncService';
 
 export class StudentController {
   // Get all students with pagination, search, and sorting
@@ -128,11 +129,23 @@ export class StudentController {
         return;
       }
 
-      // If handle changed, we'll need to fetch new data (to be implemented in Codeforces integration)
+      // If handle changed, trigger immediate Codeforces data fetch
       if (isHandleChanged) {
-        // TODO: Trigger immediate Codeforces data fetch
         student.lastDataUpdate = null; // Mark for update
         await student.save();
+        
+        // Trigger immediate data sync for the new handle
+        try {
+          console.log(`Triggering immediate sync for updated handle: ${updateData.codeforcesHandle}`);
+          const syncResult = await DataSyncService.syncStudentData(id);
+          if (syncResult.success) {
+            console.log(`Successfully synced data for ${updateData.codeforcesHandle}`);
+          } else {
+            console.warn(`Failed to sync data for ${updateData.codeforcesHandle}:`, syncResult.message);
+          }
+        } catch (error) {
+          console.error(`Error during immediate sync for ${updateData.codeforcesHandle}:`, error);
+        }
       }
 
       sendSuccess(res, student, 'Student updated successfully');

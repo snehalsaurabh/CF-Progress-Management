@@ -15,7 +15,7 @@ const StudentSchema: Schema = new Schema(
     email: {
       type: String,
       required: [true, 'Email is required'],
-      unique: true,
+      unique: true,  // Keep unique but remove index: true
       trim: true,
       lowercase: true,
       match: [
@@ -35,7 +35,7 @@ const StudentSchema: Schema = new Schema(
     codeforcesHandle: {
       type: String,
       required: [true, 'Codeforces handle is required'],
-      unique: true,
+      unique: true,  // Keep unique but remove index: true
       trim: true,
       minlength: [3, 'Codeforces handle must be at least 3 characters long'],
       maxlength: [24, 'Codeforces handle cannot exceed 24 characters'],
@@ -48,13 +48,13 @@ const StudentSchema: Schema = new Schema(
       type: Number,
       default: null,
       min: [0, 'Rating cannot be negative'],
-      max: [4000, 'Rating cannot exceed 4000']
+      max: [5000, 'Rating cannot exceed 5000']
     },
     maxRating: {
       type: Number,
       default: null,
       min: [0, 'Rating cannot be negative'],
-      max: [4000, 'Rating cannot exceed 4000']
+      max: [5000, 'Rating cannot exceed 5000']
     },
     lastDataUpdate: {
       type: Date,

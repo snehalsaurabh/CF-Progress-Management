@@ -5,6 +5,9 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import connectDB from './config/database';
 import studentRoutes from './routes/studentRoutes';
+import codeforcesRoutes from './routes/codeforcesRoutes';
+import cronRoutes from './routes/cronRoutes';
+import CronJobService from './services/cronJobService';
 
 // Load environment variables
 dotenv.config();
@@ -31,9 +34,10 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// API Routes will be added here
-// app.use('/api/students', studentRoutes);
+// API Routes
 app.use('/api/students', studentRoutes);
+app.use('/api/codeforces', codeforcesRoutes);
+app.use('/api/cron', cronRoutes);
 // Error handling middleware
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error(err.stack);
