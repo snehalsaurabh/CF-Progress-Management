@@ -1,0 +1,123 @@
+### Codeforces Progress Manager - Codeforces API Testing
+
+### Health Check
+GET http://localhost:5000/api/health
+
+### =================== CODEFORCES VALIDATION ===================
+
+### Validate Codeforces Handle (Valid)
+GET http://localhost:5000/api/codeforces/validate/tourist
+
+### Validate Codeforces Handle (Invalid)
+GET http://localhost:5000/api/codeforces/validate/nonexistent_user_12345
+
+### =================== DATA SYNC OPERATIONS ===================
+
+### Get Sync Statistics
+GET http://localhost:5000/api/codeforces/sync/stats
+
+### Sync All Students Data
+POST http://localhost:5000/api/codeforces/sync/all
+
+### Sync Specific Student Data (Replace STUDENT_ID with actual ID)
+POST http://localhost:5000/api/codeforces/sync/student/STUDENT_ID
+
+### Force Sync Specific Student (Replace STUDENT_ID with actual ID)
+POST http://localhost:5000/api/codeforces/sync/force/STUDENT_ID
+
+### =================== STUDENT ANALYTICS ===================
+
+### Get Contest History - Last 365 days (Replace STUDENT_ID)
+GET http://localhost:5000/api/codeforces/student/STUDENT_ID/contests?days=365
+
+### Get Contest History - Last 90 days
+GET http://localhost:5000/api/codeforces/student/STUDENT_ID/contests?days=90
+
+### Get Contest History - Last 30 days
+GET http://localhost:5000/api/codeforces/student/STUDENT_ID/contests?days=30
+
+### Get Problem Solving Stats - Last 30 days
+GET http://localhost:5000/api/codeforces/student/STUDENT_ID/problems?days=30
+
+### Get Problem Solving Stats - Last 90 days
+GET http://localhost:5000/api/codeforces/student/STUDENT_ID/problems?days=90
+
+### Get Problem Solving Stats - Last 7 days
+GET http://localhost:5000/api/codeforces/student/STUDENT_ID/problems?days=7
+
+### Get Recent Submissions - Last 7 days
+GET http://localhost:5000/api/codeforces/student/STUDENT_ID/submissions?days=7&limit=20
+
+### Get Recent Submissions - Last 30 days, limit 50
+GET http://localhost:5000/api/codeforces/student/STUDENT_ID/submissions?days=30&limit=50
+
+### =================== STUDENT MANAGEMENT (Updated with CF Integration) ===================
+
+### Create Student with Codeforces Handle
+POST http://localhost:5000/api/students
+Content-Type: application/json
+
+{
+  "name": "Test CF User",
+  "email": "testcf@example.com",
+  "phoneNumber": "+1234567890",
+  "codeforcesHandle": "tourist"
+}
+
+### Update Student Handle (This will trigger automatic data sync)
+PUT http://localhost:5000/api/students/STUDENT_ID
+Content-Type: application/json
+
+{
+  "codeforcesHandle": "Petr"
+}
+
+### Get All Students (should show lastDataUpdate timestamps)
+GET http://localhost:5000/api/students
+
+### =================== TESTING WORKFLOW ===================
+
+### Step 1: Create a student with a valid CF handle
+### Step 2: Check sync stats to see if student needs update
+### Step 3: Sync the student's data
+### Step 4: Check contest history
+### Step 5: Check problem solving stats
+### Step 6: Check recent submissions
+### Step 7: Update student's handle and verify auto-sync
+
+### =================== ERROR TESTING ===================
+
+### Test with invalid student ID
+GET http://localhost:5000/api/codeforces/student/invalid_id/contests
+
+### Test sync with invalid student ID
+POST http://localhost:5000/api/codeforces/sync/student/invalid_id
+
+### =================== SAMPLE WORKING HANDLES FOR TESTING ===================
+### Use these handles for testing (they are real CF users):
+### - tourist (legendary grandmaster)
+### - Petr (grandmaster)
+### - scott_wu (grandmaster)
+### - Benq (grandmaster)
+### - Um_nik (grandmaster)
+
+### Example workflow with real handle:
+### 1. First validate the handle
+GET http://localhost:5000/api/codeforces/validate/Benq
+
+### 2. Create student with this handle
+POST http://localhost:5000/api/students
+Content-Type: application/json
+
+{
+  "name": "Ben Qi",
+  "email": "benq@example.com",
+  "phoneNumber": "+1234567890",
+  "codeforcesHandle": "Benq"
+}
+
+### 3. Use the returned student ID to sync data and get analytics
+### POST http://localhost:5000/api/codeforces/sync/force/{STUDENT_ID}
+### GET http://localhost:5000/api/codeforces/student/{STUDENT_ID}/contests
+### GET http://localhost:5000/api/codeforces/student/{STUDENT_ID}/problems
+### GET http://localhost:5000/api/codeforces/student/{STUDENT_ID}/submissions 
